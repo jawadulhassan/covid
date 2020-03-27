@@ -1,203 +1,286 @@
-import Head from 'next/head'
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { isEmpty } from "lodash";
+import Head from "next/head";
 
-const Home = () => (
-  <div className="container">
-    <Head>
-      <title>Create Next App</title>
-      <link rel="icon" href="/favicon.ico" />
-    </Head>
+import Card from "../components/Card";
 
-    <main>
-      <h1 className="title">
-        Welcome to <a href="https://nextjs.org">Next.js!</a>
-      </h1>
+function App() {
+  const [data, setData] = useState("");
 
-      <p className="description">
-        Get started by editing <code>pages/index.js</code>
-      </p>
+  async function getData() {
+    const result = await axios.get(
+      "http://coronavirus-19-api.herokuapp.com/countries/pakistan"
+    );
+    setData(result.data);
+  }
 
-      <div className="grid">
-        <a href="https://nextjs.org/docs" className="card">
-          <h3>Documentation &rarr;</h3>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+  useEffect(() => {
+    getData();
+  }, []);
 
-        <a href="https://nextjs.org/learn" className="card">
-          <h3>Learn &rarr;</h3>
-          <p>Learn about Next.js in an interactive course with quizzes!</p>
-        </a>
+  if (isEmpty(data)) return null;
 
-        <a
-          href="https://github.com/zeit/next.js/tree/master/examples"
-          className="card"
-        >
-          <h3>Examples &rarr;</h3>
-          <p>Discover and deploy boilerplate example Next.js projects.</p>
-        </a>
+  const {
+    cases,
+    todayCases,
+    deaths,
+    todayDeaths,
+    recovered,
+    active,
+    critical,
+    casesPerOneMillion,
+    deathsPerOneMillion
+  } = data;
 
-        <a
-          href="https://zeit.co/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          className="card"
-        >
-          <h3>Deploy &rarr;</h3>
-          <p>
-            Instantly deploy your Next.js site to a public URL with ZEIT Now.
-          </p>
-        </a>
+  return (
+    <div className="app">
+      <Head>
+        <title>Covid-19</title>
+        <link rel="icon" href="static/images/virus.png" />
+      </Head>
+      <div className="header-wrapper">
+        <img src="static/images/virus.png" alt="virus icon" />
+        <h1>Covid - 19 (Pakistan)</h1>
       </div>
-    </main>
+      <div className="big-card">
+        <div className="flexed">
+          <div className="text-aligned-center">
+            <h1>Total Cases</h1>
+            <div className="primary-stat">{cases}</div>
+          </div>
+          <div className="text-aligned-center">
+            <h1>Active cases</h1>
+            <div className="secondary-stat">{active}</div>
+          </div>
+        </div>
+        <div className="text-aligned-center">
+          <h1>Recovered</h1>
+          <div className="recovered-stat">{recovered}</div>
+        </div>
+      </div>
+      <div className="flexed" style={{ marginTop: 40 }}>
+        <Card
+          header1="Reported Today"
+          stat1={todayCases}
+          statColor1="#4d44fc"
+          header2="Deaths Today"
+          stat2={todayDeaths}
+          statColor2="#de3a3d"
+        />
+        <Card
+          header1="Total Deaths"
+          stat1={deaths}
+          statColor1="#de3a3d"
+          header2="Critical Cases"
+          stat2={critical}
+          statColor2="#ff6164"
+        />
+        <Card
+          header1="Cases/Million"
+          stat1={casesPerOneMillion}
+          statColor1="#39faf0"
+          header2="Deaths/Million"
+          stat2={deathsPerOneMillion}
+          statColor2="#8b39f7"
+        />
+      </div>
 
-    <footer>
-      <a
-        href="https://zeit.co?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Powered by <img src="/zeit.svg" alt="ZEIT Logo" />
-      </a>
-    </footer>
-
-    <style jsx>{`
-      .container {
-        min-height: 100vh;
-        padding: 0 0.5rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
-
-      main {
-        padding: 5rem 0;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
-
-      footer {
-        width: 100%;
-        height: 100px;
-        border-top: 1px solid #eaeaea;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      footer img {
-        margin-left: 0.5rem;
-      }
-
-      footer a {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      .title a {
-        color: #0070f3;
-        text-decoration: none;
-      }
-
-      .title a:hover,
-      .title a:focus,
-      .title a:active {
-        text-decoration: underline;
-      }
-
-      .title {
-        margin: 0;
-        line-height: 1.15;
-        font-size: 4rem;
-      }
-
-      .title,
-      .description {
-        text-align: center;
-      }
-
-      .description {
-        line-height: 1.5;
-        font-size: 1.5rem;
-      }
-
-      code {
-        background: #fafafa;
-        border-radius: 5px;
-        padding: 0.75rem;
-        font-size: 1.1rem;
-        font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-          DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-      }
-
-      .grid {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-
-        max-width: 800px;
-        margin-top: 3rem;
-      }
-
-      .card {
-        margin: 1rem;
-        flex-basis: 45%;
-        padding: 1.5rem;
-        text-align: left;
-        color: inherit;
-        text-decoration: none;
-        border: 1px solid #eaeaea;
-        border-radius: 10px;
-        transition: color 0.15s ease, border-color 0.15s ease;
-      }
-
-      .card:hover,
-      .card:focus,
-      .card:active {
-        color: #0070f3;
-        border-color: #0070f3;
-      }
-
-      .card h3 {
-        margin: 0 0 1rem 0;
-        font-size: 1.5rem;
-      }
-
-      .card p {
-        margin: 0;
-        font-size: 1.25rem;
-        line-height: 1.5;
-      }
-
-      @media (max-width: 600px) {
-        .grid {
-          width: 100%;
-          flex-direction: column;
+      <style jsx global>{`
+        html,
+        body {
+          padding: 0;
+          margin: 0;
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+            sans-serif;
         }
-      }
-    `}</style>
 
-    <style jsx global>{`
-      html,
-      body {
-        padding: 0;
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-          Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-      }
+        * {
+          box-sizing: border-box;
+        }
+        @media screen and (max-width: 992px) {
+          .app {
+            padding: 30px 10px 10px 10px;
+            background-color: #141d28;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+          .header-wrapper {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 50px;
+            margin-left: -30px;
+          }
+          .header-wrapper img {
+            height: 80px;
+          }
+          .header-wrapper h1 {
+            color: #fff;
+            font-family: auto;
+            font-size: 25px;
+            width: 50%;
+          }
+          .flexed {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+          }
+          .big-card {
+            width: 60%;
+            border-radius: 5px;
+            background-color: #fcfcfc;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+          }
+          h1 {
+            font-family: auto;
+            font-size: 20px;
+          }
+          .recovered-stat {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+              Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+              sans-serif;
+            font-size: 58px;
+            color: #02ad46;
+            font-weight: bolder;
+          }
+          .primary-stat {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+              Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+              sans-serif;
+            font-size: 58px;
+            color: orange;
+            font-weight: bolder;
+          }
+          .secondary-stat {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+              Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+              sans-serif;
+            font-size: 58px;
+            color: #73a2de;
+            font-weight: bolder;
+          }
+          .small-card {
+            display: flex;
+            border-radius: 5px;
+            background-color: #fcfcfc;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin: 15px;
+          }
+          .margined-left {
+            margin-left: 0px;
+          }
+        }
 
-      * {
-        box-sizing: border-box;
-      }
-    `}</style>
-  </div>
-)
+        @media screen and (min-width: 992px) {
+          .app {
+            padding: 100px 60px;
+            background-color: #141d28;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+          .header-wrapper {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 50px;
+            margin-left: -50px;
+          }
+          .header-wrapper img {
+            height: 120px;
+          }
+          .header-wrapper h1 {
+            color: #fff;
+            font-family: auto;
+            font-size: 35px;
+          }
+          .big-card {
+            width: 35%;
+            border-radius: 5px;
+            background-color: #fcfcfc;
+            padding: 12px 25px;
+          }
+          .small-card h1 {
+            font-family: auto;
+            font-size: 20px;
+          }
+          .small-card .primary-stat {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+              Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+              sans-serif;
+            font-size: 40px;
+            font-weight: bolder;
+          }
+          .small-card .secondary-stat {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+              Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+              sans-serif;
+            font-size: 40px;
+            font-weight: bolder;
+          }
+          h1 {
+            font-family: auto;
+            font-size: 25px;
+          }
+          .recovered-stat {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+              Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+              sans-serif;
+            font-size: 78px;
+            color: #02ad46;
+            font-weight: bolder;
+          }
+          .primary-stat {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+              Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+              sans-serif;
+            font-size: 70px;
+            color: orange;
+            font-weight: bolder;
+          }
+          .secondary-stat {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+              Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+              sans-serif;
+            font-size: 70px;
+            color: #73a2de;
+            font-weight: bolder;
+          }
+          .flexed {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+          }
+          .small-card {
+            border-radius: 5px;
+            background-color: #fcfcfc;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin: 15px;
+          }
+          .margined-left {
+            margin-left: 30px;
+          }
+        }
+        .text-aligned-center {
+          text-align: center;
+        }
+      `}</style>
+    </div>
+  );
+}
 
-export default Home
+export default App;
