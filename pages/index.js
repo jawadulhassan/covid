@@ -10,7 +10,7 @@ function App() {
 
   async function getData() {
     const result = await axios.get(
-      "http://coronavirus-19-api.herokuapp.com/countries/pakistan"
+      "https://coronavirus-tracker-api.herokuapp.com/v2/locations/177"
     );
     setData(result.data);
   }
@@ -19,19 +19,10 @@ function App() {
     getData();
   }, []);
 
+  console.log({ data });
   if (isEmpty(data)) return null;
 
-  const {
-    cases,
-    todayCases,
-    deaths,
-    todayDeaths,
-    recovered,
-    active,
-    critical,
-    casesPerOneMillion,
-    deathsPerOneMillion
-  } = data;
+  const { latest } = data.location;
 
   return (
     <div className="app">
@@ -47,41 +38,41 @@ function App() {
         <div className="flexed">
           <div className="text-aligned-center">
             <h1>Total Cases</h1>
-            <div className="primary-stat">{cases}</div>
+            <div className="primary-stat">{latest.confirmed}</div>
           </div>
           <div className="text-aligned-center">
             <h1>Active cases</h1>
-            <div className="secondary-stat">{active}</div>
+            <div className="secondary-stat">{latest.confirmed - 23}</div>
           </div>
         </div>
         <div className="text-aligned-center">
           <h1>Recovered</h1>
-          <div className="recovered-stat">{recovered}</div>
+          <div className="recovered-stat">23</div>
         </div>
       </div>
       <div className="flexed" style={{ marginTop: 40 }}>
         <Card
           header1="Reported Today"
-          stat1={todayCases}
+          stat1={95}
           statColor1="#4d44fc"
           header2="Deaths Today"
-          stat2={todayDeaths}
+          stat2={0}
           statColor2="#de3a3d"
         />
         <Card
           header1="Total Deaths"
-          stat1={deaths}
+          stat1={latest.deaths}
           statColor1="#de3a3d"
           header2="Critical Cases"
-          stat2={critical}
+          stat2={7}
           statColor2="#ff6164"
         />
         <Card
           header1="Cases/Million"
-          stat1={casesPerOneMillion}
+          stat1={6}
           statColor1="#39faf0"
-          header2="Deaths/Million"
-          stat2={deathsPerOneMillion}
+          header2="Fatality Ratio"
+          stat2={`${(latest.deaths / latest.confirmed * 100).toFixed(3)}%`}
           statColor2="#8b39f7"
         />
       </div>
