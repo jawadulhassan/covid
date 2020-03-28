@@ -3,16 +3,17 @@ import axios from "axios";
 import { isEmpty } from "lodash";
 import Head from "next/head";
 
+import Map from "../components/Map";
 import Card from "../components/Card";
 
 function App() {
   const [data, setData] = useState("");
 
   async function getData() {
-    const result = await axios.get(
-      "https://coronavirus-tracker-api.herokuapp.com/v2/locations/177"
-    );
-    setData(result.data);
+    const result = await axios.get("https://bing.com/covid/data");
+    const pakData =
+      !!result && result.data.find(country => country.id === "pakistan");
+    setData(pakData);
   }
 
   useEffect(() => {
@@ -20,9 +21,15 @@ function App() {
   }, []);
 
   console.log({ data });
-  if (isEmpty(data)) return null;
+  // if (isEmpty(data)) return null;
 
-  const { latest } = data.location;
+  const {
+    totalConfirmed,
+    totalDeaths,
+    totalRecovered,
+    lastUpdated,
+    areas
+  } = data;
 
   return (
     <div className="app">
@@ -34,20 +41,28 @@ function App() {
         <img src="static/images/virus.png" alt="virus icon" />
         <h1>Covid - 19 (Pakistan)</h1>
       </div>
+
+      {/* <Map {...{ areas }} /> */}
+
       <div className="big-card">
         <div className="flexed">
           <div className="text-aligned-center">
             <h1>Total Cases</h1>
-            <div className="primary-stat">{latest.confirmed}</div>
+            <div className="primary-stat">{totalConfirmed}</div>
           </div>
           <div className="text-aligned-center">
             <h1>Active cases</h1>
-            <div className="secondary-stat">{latest.confirmed - 23}</div>
+            <div className="secondary-stat">
+              {totalConfirmed - totalRecovered - totalDeaths}
+            </div>
+          </div>
+          <div style={{ position: "absolute", right: 20, bottom: 10 }}>
+            Last updated at: {lastUpdated}
           </div>
         </div>
         <div className="text-aligned-center">
           <h1>Recovered</h1>
-          <div className="recovered-stat">23</div>
+          <div className="recovered-stat">{totalRecovered}</div>
         </div>
       </div>
       <div className="flexed" style={{ marginTop: 40 }}>
@@ -56,15 +71,15 @@ function App() {
           stat1={95}
           statColor1="#4d44fc"
           header2="Deaths Today"
-          stat2={0}
+          stat2={2}
           statColor2="#de3a3d"
         />
         <Card
           header1="Total Deaths"
-          stat1={latest.deaths}
+          stat1={totalDeaths}
           statColor1="#de3a3d"
           header2="Critical Cases"
-          stat2={7}
+          stat2={9}
           statColor2="#ff6164"
         />
         <Card
@@ -72,7 +87,7 @@ function App() {
           stat1={6}
           statColor1="#39faf0"
           header2="Fatality Ratio"
-          stat2={`${(latest.deaths / latest.confirmed * 100).toFixed(3)}%`}
+          stat2={`${((totalDeaths / totalConfirmed) * 100).toFixed(3)}%`}
           statColor2="#8b39f7"
         />
       </div>

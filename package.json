@@ -8,8 +8,12 @@
     "start": "next start"
   },
   "dependencies": {
+    "@highcharts/map-collection": "^1.1.3",
     "axios": "^0.19.2",
+    "highcharts": "^8.0.4",
+    "highcharts-react-official": "^3.0.0",
     "next": "9.3.2",
+    "proj4": "^2.6.0",
     "react": "16.13.1",
     "react-dom": "16.13.1"
   }
