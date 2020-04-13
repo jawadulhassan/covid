@@ -47,7 +47,7 @@ function App() {
         </div>
         <div className="text-aligned-center">
           <h1>Recovered</h1>
-          <div className="recovered-stat">23</div>
+          <div className="recovered-stat">1,095</div>
         </div>
       </div>
       <div className="flexed" style={{ marginTop: 40 }}>
@@ -56,7 +56,7 @@ function App() {
           stat1={95}
           statColor1="#4d44fc"
           header2="Deaths Today"
-          stat2={0}
+          stat2={4}
           statColor2="#de3a3d"
         />
         <Card
@@ -64,12 +64,12 @@ function App() {
           stat1={latest.deaths}
           statColor1="#de3a3d"
           header2="Critical Cases"
-          stat2={7}
+          stat2={14}
           statColor2="#ff6164"
         />
         <Card
           header1="Cases/Million"
-          stat1={6}
+          stat1={11}
           statColor1="#39faf0"
           header2="Fatality Ratio"
           stat2={`${(latest.deaths / latest.confirmed * 100).toFixed(3)}%`}
