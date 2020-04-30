@@ -19,6 +19,9 @@ function App() {
     getData();
   }, []);
 
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  }
   console.log({ data });
   if (isEmpty(data)) return null;
 
@@ -38,25 +41,29 @@ function App() {
         <div className="flexed">
           <div className="text-aligned-center">
             <h1>Total Cases</h1>
-            <div className="primary-stat">{latest.confirmed}</div>
+            <div className="primary-stat">
+              {numberWithCommas(latest.confirmed)}
+            </div>
           </div>
           <div className="text-aligned-center">
             <h1>Active cases</h1>
-            <div className="secondary-stat">{latest.confirmed - 23}</div>
+            <div className="secondary-stat">
+              {numberWithCommas(latest.confirmed - 4052 - latest.deaths)}
+            </div>
           </div>
         </div>
         <div className="text-aligned-center">
           <h1>Recovered</h1>
-          <div className="recovered-stat">1,095</div>
+          <div className="recovered-stat">{numberWithCommas(4052)}</div>
         </div>
       </div>
       <div className="flexed" style={{ marginTop: 40 }}>
         <Card
           header1="Reported Today"
-          stat1={95}
+          stat1={545}
           statColor1="#4d44fc"
           header2="Deaths Today"
-          stat2={4}
+          stat2={40}
           statColor2="#de3a3d"
         />
         <Card
@@ -64,15 +71,15 @@ function App() {
           stat1={latest.deaths}
           statColor1="#de3a3d"
           header2="Critical Cases"
-          stat2={14}
+          stat2={27}
           statColor2="#ff6164"
         />
         <Card
           header1="Cases/Million"
-          stat1={11}
+          stat1={`${((latest.confirmed / 2200000) * 100).toFixed(2)}%`}
           statColor1="#39faf0"
           header2="Fatality Ratio"
-          stat2={`${(latest.deaths / latest.confirmed * 100).toFixed(3)}%`}
+          stat2={`${((latest.deaths / latest.confirmed) * 100).toFixed(2)}%`}
           statColor2="#8b39f7"
         />
       </div>
