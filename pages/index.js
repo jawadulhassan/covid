@@ -1,31 +1,40 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { isEmpty } from "lodash";
 import Head from "next/head";
+import { isEmpty } from "lodash";
 
 import Card from "../components/Card";
+import SimpleLoader from "../components/SimpleLoader";
 
 function App() {
   const [data, setData] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   async function getData() {
     const result = await axios.get(
       "https://coronavirus-tracker-api.herokuapp.com/v2/locations/177"
     );
     setData(result.data);
+    setIsLoading(false);
   }
 
   useEffect(() => {
+    setIsLoading(true);
     getData();
   }, []);
 
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
   }
-  console.log({ data });
-  if (isEmpty(data)) return null;
 
-  const { latest } = data.location;
+  if (isEmpty(data) || isLoading) {
+    return (
+      <div className="app" style={{ backgroundColor: "#141d28" }}>
+        <SimpleLoader />
+      </div>
+    );
+  }
+  const { latest } = data && data.location;
 
   return (
     <div className="app">
@@ -48,22 +57,22 @@ function App() {
           <div className="text-aligned-center">
             <h1>Active cases</h1>
             <div className="secondary-stat">
-              {numberWithCommas(latest.confirmed - 4052 - latest.deaths)}
+              {numberWithCommas(latest.confirmed - 16653 - latest.deaths)}
             </div>
           </div>
         </div>
         <div className="text-aligned-center">
           <h1>Recovered</h1>
-          <div className="recovered-stat">{numberWithCommas(4052)}</div>
+          <div className="recovered-stat">{numberWithCommas(16653)}</div>
         </div>
       </div>
       <div className="flexed" style={{ marginTop: 40 }}>
         <Card
           header1="Reported Today"
-          stat1={545}
+          stat1={291}
           statColor1="#4d44fc"
           header2="Deaths Today"
-          stat2={40}
+          stat2={34}
           statColor2="#de3a3d"
         />
         <Card
@@ -71,11 +80,11 @@ function App() {
           stat1={latest.deaths}
           statColor1="#de3a3d"
           header2="Critical Cases"
-          stat2={27}
+          stat2={107}
           statColor2="#ff6164"
         />
         <Card
-          header1="Cases/Million"
+          header1="Cases/Population"
           stat1={`${((latest.confirmed / 2200000) * 100).toFixed(2)}%`}
           statColor1="#39faf0"
           header2="Fatality Ratio"
@@ -152,7 +161,7 @@ function App() {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
               Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
               sans-serif;
-            font-size: 58px;
+            font-size: 50px;
             color: orange;
             font-weight: bolder;
           }
@@ -160,7 +169,7 @@ function App() {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
               Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
               sans-serif;
-            font-size: 58px;
+            font-size: 50px;
             color: #73a2de;
             font-weight: bolder;
           }
@@ -235,7 +244,7 @@ function App() {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
               Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
               sans-serif;
-            font-size: 78px;
+            font-size: 55px;
             color: #02ad46;
             font-weight: bolder;
           }
@@ -243,7 +252,7 @@ function App() {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
               Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
               sans-serif;
-            font-size: 70px;
+            font-size: 55px;
             color: orange;
             font-weight: bolder;
           }
@@ -251,7 +260,7 @@ function App() {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
               Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
               sans-serif;
-            font-size: 70px;
+            font-size: 55px;
             color: #73a2de;
             font-weight: bolder;
           }
@@ -275,6 +284,14 @@ function App() {
         }
         .text-aligned-center {
           text-align: center;
+        }
+        .app-loader {
+          position: fixed;
+          left: 50%;
+          top: 50%;
+          width: 100%;
+          height: 100%;
+          z-index: 9999;
         }
       `}</style>
     </div>
