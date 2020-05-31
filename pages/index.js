@@ -29,12 +29,23 @@ function App() {
 
   if (isEmpty(data) || isLoading) {
     return (
-      <div className="app" style={{ backgroundColor: "#141d28" }}>
+      <div
+        style={{
+          padding: 0,
+          margin: 0,
+          width: "100%",
+          minHeight: "100vh",
+          paddingTop: "100px",
+          backgroundColor: "#141d28",
+          transition: "all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1)",
+        }}
+      >
         <SimpleLoader />
       </div>
     );
   }
   const { latest } = data && data.location;
+  let recoveredCases = 25271;
 
   return (
     <div className="app">
@@ -57,13 +68,17 @@ function App() {
           <div className="text-aligned-center">
             <h1>Active cases</h1>
             <div className="secondary-stat">
-              {numberWithCommas(latest.confirmed - 16653 - latest.deaths)}
+              {numberWithCommas(
+                latest.confirmed - recoveredCases - latest.deaths
+              )}
             </div>
           </div>
         </div>
         <div className="text-aligned-center">
           <h1>Recovered</h1>
-          <div className="recovered-stat">{numberWithCommas(16653)}</div>
+          <div className="recovered-stat">
+            {numberWithCommas(recoveredCases)}
+          </div>
         </div>
       </div>
       <div className="flexed" style={{ marginTop: 40 }}>
@@ -190,7 +205,7 @@ function App() {
 
         @media screen and (min-width: 992px) {
           .app {
-            padding: 100px 60px;
+            padding: 20px 60px;
             background-color: #141d28;
             display: flex;
             flex-direction: column;
