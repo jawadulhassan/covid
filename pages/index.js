@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import axios from "axios";
 import Head from "next/head";
 import { isEmpty } from "lodash";
 
 import Card from "../components/Card";
+
 import SimpleLoader from "../components/SimpleLoader";
 
 function App() {
   const [data, setData] = useState("");
+  const [graphData, setGraphData] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   async function getData() {
@@ -18,16 +20,26 @@ function App() {
     setIsLoading(false);
   }
 
+  async function getGraphData() {
+    const result = await axios.get(
+      "https://api.covid19api.com/total/dayone/country/pakistan"
+    );
+    setGraphData(result.data);
+    setIsLoading(false);
+  }
+
   useEffect(() => {
     setIsLoading(true);
     getData();
+    getGraphData();
   }, []);
 
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  if (isEmpty(data) || isLoading) {
+  console.log({ graphData });
+  if (isEmpty(data) || isEmpty(graphData) || isLoading) {
     return (
       <div
         style={{
@@ -44,8 +56,11 @@ function App() {
       </div>
     );
   }
+
+  if (isEmpty(graphData)) return null;
+
   const { latest } = data && data.location;
-  let recoveredCases = 25271;
+  let recoveredCases = graphData[graphData.length - 1].Recovered;
 
   return (
     <div className="app">
