@@ -1,11 +1,17 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Head from "next/head";
 import { isEmpty } from "lodash";
 
 import Card from "../components/Card";
-
 import SimpleLoader from "../components/SimpleLoader";
+
+import { dataManipulator } from "../shared/helper";
+
+import DeathChart from "./Charts/Deaths";
+import ActiveChart from "./Charts/Active";
+import RecoveredChart from "./Charts/Recovered";
+import ConfirmedChart from "./Charts/Confirmed";
 
 function App() {
   const [data, setData] = useState("");
@@ -38,26 +44,35 @@ function App() {
     return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  console.log({ graphData });
+  // console.log({ graphData });
   if (isEmpty(data) || isEmpty(graphData) || isLoading) {
     return (
-      <div
-        style={{
-          padding: 0,
-          margin: 0,
-          width: "100%",
-          minHeight: "100vh",
-          paddingTop: "100px",
-          backgroundColor: "#141d28",
-          transition: "all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1)",
-        }}
-      >
-        <SimpleLoader />
-      </div>
+      <body style={{ margin: 0 }}>
+        <div
+          style={{
+            padding: 0,
+            margin: 0,
+            width: "100%",
+            minHeight: "100vh",
+            paddingTop: "100px",
+            backgroundColor: "#141d28",
+            transition: "all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1)",
+          }}
+        >
+          <SimpleLoader />
+        </div>
+      </body>
     );
   }
 
   if (isEmpty(graphData)) return null;
+
+  const {
+    activeCasesObj,
+    confirmedCasesObj,
+    fatalitiesCasesObj,
+    recoveriesCasesObj,
+  } = dataManipulator(graphData);
 
   const { latest } = data && data.location;
   let recoveredCases = graphData[graphData.length - 1].Recovered;
@@ -95,6 +110,15 @@ function App() {
             {numberWithCommas(recoveredCases)}
           </div>
         </div>
+      </div>
+      <div className="graph-wrapper">
+        <ConfirmedChart series={confirmedCasesObj} />
+        <ActiveChart series={activeCasesObj} />
+      </div>
+
+      <div className="graph-wrapper">
+        <RecoveredChart series={recoveriesCasesObj} />
+        <DeathChart series={fatalitiesCasesObj} />
       </div>
       <div className="flexed" style={{ marginTop: 40 }}>
         <Card
@@ -143,6 +167,8 @@ function App() {
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
+            min-height: 100vh;
           }
           .header-wrapper {
             display: flex;
@@ -166,8 +192,17 @@ function App() {
             flex-direction: column;
             justify-content: space-between;
           }
+          .graph-wrapper {
+            display: flex;
+            flex-direction: column;
+          }
+          .graph-size {
+            width: 350px;
+            margin-top: 30px;
+            align-self: center;
+          }
           .big-card {
-            width: 60%;
+            width: 70%;
             border-radius: 5px;
             background-color: #fcfcfc;
             padding: 20px;
@@ -191,15 +226,15 @@ function App() {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
               Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
               sans-serif;
-            font-size: 50px;
-            color: orange;
+            font-size: 45px;
+            color: rgb(244, 195, 99);
             font-weight: bolder;
           }
           .secondary-stat {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
               Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
               sans-serif;
-            font-size: 50px;
+            font-size: 45px;
             color: #73a2de;
             font-weight: bolder;
           }
@@ -225,6 +260,8 @@ function App() {
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
+            min-height: 100vh;
           }
           .header-wrapper {
             display: flex;
@@ -243,10 +280,19 @@ function App() {
             font-size: 35px;
           }
           .big-card {
-            width: 35%;
             border-radius: 5px;
             background-color: #fcfcfc;
             padding: 12px 25px;
+          }
+          .graph-wrapper {
+            display: flex;
+            flex-direction: row;
+            padding: 20px;
+          }
+          .graph-size {
+            width: 500px;
+            height: 400px !important;
+            margin: 20px;
           }
           .small-card h1 {
             font-family: auto;
@@ -282,15 +328,15 @@ function App() {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
               Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
               sans-serif;
-            font-size: 55px;
-            color: orange;
+            font-size: 50px;
+            color: rgb(244, 195, 99);
             font-weight: bolder;
           }
           .secondary-stat {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
               Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
               sans-serif;
-            font-size: 55px;
+            font-size: 50px;
             color: #73a2de;
             font-weight: bolder;
           }

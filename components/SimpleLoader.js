@@ -6,7 +6,7 @@ function SimpleLoader() {
     <div
       style={{
         position: "fixed",
-        left: "50%",
+        left: "45%",
         top: "40%",
         width: "100%",
         height: "100%",
