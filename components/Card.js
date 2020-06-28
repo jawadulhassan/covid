@@ -11,6 +11,7 @@ function Card(props) {
     statColor1,
     statColor2,
     statColor3,
+    description2,
   } = props;
   return (
     <div className="small-card">
@@ -23,7 +24,12 @@ function Card(props) {
         </div>
         {!!header2 && (
           <div className="margined-left">
-            <h1>{header2}</h1>
+            <h1>
+              {header2}{" "}
+              {!!description2 && (
+                <i style={{ fontSize: 10 }}>({description2})</i>
+              )}
+            </h1>
             <div className="secondary-stat" style={{ color: `${statColor2}` }}>
               {stat2}
             </div>

@@ -86,7 +86,7 @@ function App() {
   let recoveriesToday =
     graphData[graphData.length - 1].Recovered -
     graphData[graphData.length - 2].Recovered;
-    
+
   return (
     <div className="app">
       <Head>
@@ -151,7 +151,8 @@ function App() {
           header1="Cases/Population"
           stat1={`${((latest.confirmed / 220000000) * 100).toFixed(2)}%`}
           statColor1="#39faf0"
-          header2="Fatality Ratio"
+          header2="Fatality Ratio "
+          description2={"of total case"}
           stat2={`${((latest.deaths / latest.confirmed) * 100).toFixed(2)}%`}
           statColor2="#8b39f7"
         />
