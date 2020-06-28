@@ -1,7 +1,17 @@
 import React from "react";
 
 function Card(props) {
-  const { header1, stat1, header2, stat2, statColor1, statColor2 } = props;
+  const {
+    stat1,
+    stat2,
+    stat3,
+    header1,
+    header2,
+    header3,
+    statColor1,
+    statColor2,
+    statColor3,
+  } = props;
   return (
     <div className="small-card">
       <div className="flexed">
@@ -11,12 +21,22 @@ function Card(props) {
             {stat1}
           </div>
         </div>
-        <div className="margined-left">
-          <h1>{header2}</h1>
-          <div className="secondary-stat" style={{ color: `${statColor2}` }}>
-            {stat2}
+        {!!header2 && (
+          <div className="margined-left">
+            <h1>{header2}</h1>
+            <div className="secondary-stat" style={{ color: `${statColor2}` }}>
+              {stat2}
+            </div>
           </div>
-        </div>
+        )}
+        {!!header3 && (
+          <div className="margined-left">
+            <h1>{header3}</h1>
+            <div className="secondary-stat" style={{ color: `${statColor3}` }}>
+              {stat3}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -77,6 +77,16 @@ function App() {
   const { latest } = data && data.location;
   let recoveredCases = graphData[graphData.length - 1].Recovered;
 
+  let deathsToday =
+    graphData[graphData.length - 1].Deaths -
+    graphData[graphData.length - 2].Deaths;
+  let reportedToday =
+    graphData[graphData.length - 1].Confirmed -
+    graphData[graphData.length - 2].Confirmed;
+  let recoveriesToday =
+    graphData[graphData.length - 1].Recovered -
+    graphData[graphData.length - 2].Recovered;
+    
   return (
     <div className="app">
       <Head>
@@ -123,23 +133,23 @@ function App() {
       <div className="flexed" style={{ marginTop: 40 }}>
         <Card
           header1="Reported Today"
-          stat1={291}
+          stat1={reportedToday}
           statColor1="#4d44fc"
           header2="Deaths Today"
-          stat2={34}
+          stat2={deathsToday}
           statColor2="#de3a3d"
+          header3="Recoveries Today"
+          stat3={recoveriesToday}
+          statColor3="#02ad46"
         />
         <Card
           header1="Total Deaths"
           stat1={latest.deaths}
           statColor1="#de3a3d"
-          header2="Critical Cases"
-          stat2={107}
-          statColor2="#ff6164"
         />
         <Card
           header1="Cases/Population"
-          stat1={`${((latest.confirmed / 2200000) * 100).toFixed(2)}%`}
+          stat1={`${((latest.confirmed / 220000000) * 100).toFixed(2)}%`}
           statColor1="#39faf0"
           header2="Fatality Ratio"
           stat2={`${((latest.deaths / latest.confirmed) * 100).toFixed(2)}%`}
