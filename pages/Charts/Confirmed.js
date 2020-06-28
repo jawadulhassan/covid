@@ -1,5 +1,6 @@
 import React from "react";
 import moment from "moment";
+import IsEmpty from "lodash/isEmpty";
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts/highcharts.src.js";
 
@@ -12,6 +13,8 @@ if (typeof Highcharts === "object") {
 function Charts(props) {
   const { series } = props;
 
+  if (IsEmpty(series) || !series) return null;
+  
   let dates = [];
   let list = [];
   series.data.map((item) => {
