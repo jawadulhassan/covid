@@ -65,14 +65,14 @@ function App() {
     );
   }
 
-  if (isEmpty(graphData)) return null;
+  if (isEmpty(graphData) || !graphData) return null;
 
   const {
     activeCasesObj,
     confirmedCasesObj,
     fatalitiesCasesObj,
     recoveriesCasesObj,
-  } = dataManipulator(graphData);
+  } = dataManipulator(graphData && graphData);
 
   const { latest } = data && data.location;
   let recoveredCases = graphData[graphData.length - 1].Recovered;
