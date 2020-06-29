@@ -20,7 +20,13 @@ function App() {
 
   async function getData() {
     const result = await axios.get(
-      "https://coronavirus-tracker-api.herokuapp.com/v2/locations/177"
+      "https://coronavirus-tracker-api.herokuapp.com/v2/locations/177",
+      {
+        headers: {
+          Accept: "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
     );
     setData(result.data);
     setIsLoading(false);
@@ -28,7 +34,13 @@ function App() {
 
   async function getGraphData() {
     const result = await axios.get(
-      "https://api.covid19api.com/total/dayone/country/pakistan"
+      "https://api.covid19api.com/total/dayone/country/pakistan",
+      {
+        headers: {
+          Accept: "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
     );
     setGraphData(result.data);
     setIsLoading(false);
