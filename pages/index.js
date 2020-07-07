@@ -8,29 +8,14 @@ import SimpleLoader from "../components/SimpleLoader";
 
 import { dataManipulator } from "../shared/helper";
 
-import DeathChart from "./Charts/Deaths";
-import ActiveChart from "./Charts/Active";
-import RecoveredChart from "./Charts/Recovered";
-import ConfirmedChart from "./Charts/Confirmed";
+import DeathChart from "../components/Charts/Deaths";
+import ActiveChart from "../components/Charts/Active";
+import RecoveredChart from "../components/Charts/Recovered";
+import ConfirmedChart from "../components/Charts/Confirmed";
 
 function App() {
-  const [data, setData] = useState("");
   const [graphData, setGraphData] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  async function getData() {
-    const result = await axios.get(
-      "https://coronavirus-tracker-api.herokuapp.com/v2/locations/177",
-      {
-        headers: {
-          Accept: "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      }
-    );
-    setData(result.data);
-    setIsLoading(false);
-  }
 
   async function getGraphData() {
     const result = await axios.get(
@@ -48,7 +33,6 @@ function App() {
 
   useEffect(() => {
     setIsLoading(true);
-    getData();
     getGraphData();
   }, []);
 
@@ -56,28 +40,25 @@ function App() {
     return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  // console.log({ graphData });
-  if (isEmpty(data) || isEmpty(graphData) || isLoading) {
+  if (isLoading) {
     return (
-      <body style={{ margin: 0 }}>
-        <div
-          style={{
-            padding: 0,
-            margin: 0,
-            width: "100%",
-            minHeight: "100vh",
-            paddingTop: "100px",
-            backgroundColor: "#141d28",
-            transition: "all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1)",
-          }}
-        >
-          <SimpleLoader />
-        </div>
-      </body>
+      <div
+        style={{
+          padding: 0,
+          margin: 0,
+          width: "100%",
+          minHeight: "100vh",
+          paddingTop: "100px",
+          backgroundColor: "#141d28",
+          transition: "all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1)",
+        }}
+      >
+        <SimpleLoader />
+      </div>
     );
   }
 
-  if (isEmpty(graphData) || !graphData) return null;
+  if (!graphData) return null;
 
   const {
     activeCasesObj,
@@ -86,25 +67,22 @@ function App() {
     recoveriesCasesObj,
   } = dataManipulator(graphData && graphData);
 
-  const { latest } = data && data.location;
-  let recoveredCases = graphData[graphData.length - 1].Recovered;
+  let totalLength = graphData.length;
+
+  let fatalCases = graphData[totalLength - 1].Deaths;
+  let activeCases = graphData[totalLength - 1].Active;
+  let confirmedCases = graphData[totalLength - 1].Confirmed;
+  let recoveredCases = graphData[totalLength - 1].Recovered;
 
   let deathsToday =
-    graphData[graphData.length - 1].Deaths -
-    graphData[graphData.length - 2].Deaths;
+    graphData[totalLength - 1].Deaths - graphData[totalLength - 2].Deaths;
   let reportedToday =
-    graphData[graphData.length - 1].Confirmed -
-    graphData[graphData.length - 2].Confirmed;
+    graphData[totalLength - 1].Confirmed - graphData[totalLength - 2].Confirmed;
   let recoveriesToday =
-    graphData[graphData.length - 1].Recovered -
-    graphData[graphData.length - 2].Recovered;
+    graphData[totalLength - 1].Recovered - graphData[totalLength - 2].Recovered;
 
   return (
     <div className="app">
-      <Head>
-        <title>Covid-19</title>
-        <link rel="icon" href="static/images/virus.png" />
-      </Head>
       <div className="header-wrapper">
         <img src="static/images/virus.png" alt="virus icon" />
         <h1>Covid - 19 (Pakistan)</h1>
@@ -114,15 +92,13 @@ function App() {
           <div className="text-aligned-center">
             <h1>Total Cases</h1>
             <div className="primary-stat">
-              {numberWithCommas(latest.confirmed)}
+              {numberWithCommas(confirmedCases)}
             </div>
           </div>
           <div className="text-aligned-center">
             <h1>Active cases</h1>
             <div className="secondary-stat">
-              {numberWithCommas(
-                latest.confirmed - recoveredCases - latest.deaths
-              )}
+              {numberWithCommas(activeCases)}
             </div>
           </div>
         </div>
@@ -154,18 +130,14 @@ function App() {
           stat3={recoveriesToday}
           statColor3="#02ad46"
         />
-        <Card
-          header1="Total Deaths"
-          stat1={latest.deaths}
-          statColor1="#de3a3d"
-        />
+        <Card header1="Total Deaths" stat1={fatalCases} statColor1="#de3a3d" />
         <Card
           header1="Cases/Population"
-          stat1={`${((latest.confirmed / 220000000) * 100).toFixed(2)}%`}
+          stat1={`${((confirmedCases / 220000000) * 100).toFixed(2)}%`}
           statColor1="#39faf0"
           header2="Fatality Ratio "
           description2={"of total case"}
-          stat2={`${((latest.deaths / latest.confirmed) * 100).toFixed(2)}%`}
+          stat2={`${((fatalCases / confirmedCases) * 100).toFixed(2)}%`}
           statColor2="#8b39f7"
         />
       </div>
