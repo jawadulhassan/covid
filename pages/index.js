@@ -60,6 +60,7 @@ function App() {
 
   if (!graphData) return null;
 
+  console.log({ graphData });
   const {
     activeCasesObj,
     confirmedCasesObj,
@@ -121,13 +122,13 @@ function App() {
       <div className="flexed" style={{ marginTop: 40 }}>
         <Card
           header1="Reported Today"
-          stat1={reportedToday}
+          stat1={reportedToday < 0 ? 0 : reportedToday}
           statColor1="#4d44fc"
           header2="Deaths Today"
-          stat2={deathsToday}
+          stat2={deathsToday < 0 ? 0 : deathsToday}
           statColor2="#de3a3d"
           header3="Recoveries Today"
-          stat3={recoveriesToday}
+          stat3={recoveriesToday < 0 ? 0 : recoveriesToday}
           statColor3="#02ad46"
         />
         <Card header1="Total Deaths" stat1={fatalCases} statColor1="#de3a3d" />
